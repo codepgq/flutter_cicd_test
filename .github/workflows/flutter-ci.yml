@@ -40,9 +40,9 @@ jobs:
       # Step 6: Run integration tests
       - name: Start iOS Simulator
         run: |
-          UDID=$(xcrun simctl list devices | grep "iPhone 16 Pro" | grep "Booted" | awk -F'[()]' '{print $2}')
+          UDID=$(xcrun simctl list devices | grep "iPhone 15" | grep "Booted" | awk -F'[()]' '{print $2}')
           if [ -z "$UDID" ]; then
-            UDID=$(xcrun simctl create "iPhone 16 Pro" com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro)
+            UDID=$(xcrun simctl create "iPhone 15" com.apple.CoreSimulator.SimDeviceType.iPhone-15)
             xcrun simctl boot $UDID
           fi
           
