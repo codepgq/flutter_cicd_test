@@ -37,17 +37,17 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-      # Step 6: Run integration tests
-      # - name: Start iOS Simulator
-      #   run: |
-      #     UDID=$(xcrun simctl list devices | grep "iPhone 14" | grep "Booted" | awk -F'[()]' '{print $2}')
-      #     if [ -z "$UDID" ]; then
-      #       UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14)
-      #       xcrun simctl boot $UDID
-      #     fi
+      Step 6: Run integration tests
+      - name: Start iOS Simulator
+        run: |
+          UDID=$(xcrun simctl list devices | grep "iPhone 14" | grep "Booted" | awk -F'[()]' '{print $2}')
+          if [ -z "$UDID" ]; then
+            UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14)
+            xcrun simctl boot $UDID
+          fi
           
-      # - name: Run integration tests
-      #   run: flutter drive --driver=test_driver/app_test.dart --target=test_driver/app.dart
+      - name: Run integration tests
+        run: flutter test integration_test
       
       # Step 7: Upload coverage
       - name: Upload coverage to Codecov
