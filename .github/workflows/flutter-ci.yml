@@ -11,6 +11,7 @@ on:
 jobs:
   build-and-test:
     runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
@@ -21,6 +22,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.5'
+          cache: true
 
       # Step 3: 获取依赖
       - name: Install dependencies
@@ -32,17 +34,25 @@ jobs:
 
       # Step 5: 运行测试
       - name: Run tests
-        run: flutter test
+        run: flutter test --coverage
 
       # Step 6: Run integration tests
+      - name: Start iOS Simulator
+        run: |
+          UDID=$(xcrun simctl list devices | grep "iPhone 14" | grep "Booted" | awk -F'[()]' '{print $2}')
+          if [ -z "$UDID" ]; then
+            UDID=$(xcrun simctl create "iPhone 14" com.apple.CoreSimulator.SimDeviceType.iPhone-14)
+            xcrun simctl boot $UDID
+          fi
+          
       - name: Run integration tests
-        run: flutter drive --target=test_driver/app.dart
+        run: flutter drive --driver=test_driver/app_test.dart --target=test_driver/app.dart
       
       # Step 7: Upload coverage
       - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: coverage/lcov.info
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage/lcov.info
 
       # Step 8: Build APK
       #- name: Build APK
@@ -55,6 +65,7 @@ jobs:
   deploy:
     runs-on: macos-latest
     needs: build-and-test
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Deployment step
         run: echo "This step can be configured to deploy your app to a store or server"
