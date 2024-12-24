@@ -1,0 +1,43 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: 设置 Flutter 环境
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      # Step 3: 获取依赖
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Step 4: 静态代码检查
+      - name: Run analyzer
+        run: flutter analyze
+
+      # Step 5: 运行测试
+      - name: Run tests
+        run: flutter test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - name: Deployment step
+        run: echo "This step can be configured to deploy your app to a store or server"
