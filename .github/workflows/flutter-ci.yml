@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-      Step 6: Run integration tests
+      # Step 6: Run integration tests
       - name: Start iOS Simulator
         run: |
           UDID=$(xcrun simctl list devices | grep "iPhone 14" | grep "Booted" | awk -F'[()]' '{print $2}')
